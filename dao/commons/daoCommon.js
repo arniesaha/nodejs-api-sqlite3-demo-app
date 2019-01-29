@@ -30,6 +30,25 @@ class Common {
         });
     }
 
+    findAllWithParams(sqlRequest, sqlParams) {
+        return new Promise(function (resolve, reject) {
+            let stmt = database.db.prepare(sqlRequest);
+            stmt.all(sqlParams, function (err, rows) {
+                if (err) {
+                    reject(
+                        new DaoError(20, "Internal server error")
+                    );
+                } else if (rows === null || rows.length === 0) {
+                    reject(
+                        new DaoError(21, "Entity not found")
+                    );
+                } else {
+                    resolve(rows);
+                }
+            })
+        });
+    }
+
     findOne(sqlRequest, sqlParams) {
         return new Promise(function (resolve, reject) {
             let stmt = database.db.prepare(sqlRequest);
@@ -84,6 +103,21 @@ class Common {
                     reject(
                         new DaoError(11, "Invalid arguments")
                     )
+                }
+            })
+        });
+    }
+
+    runWithoutParams(sqlRequest) {
+        return new Promise(function (resolve, reject) {
+
+            database.db.run(sqlRequest, function (err) {
+                if (err) {
+                    reject(
+                        new DaoError(20, "Internal server error")
+                    );
+                }  else {
+                    resolve(true);
                 }
             })
         });

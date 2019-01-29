@@ -24,10 +24,39 @@ class controllerCommon {
         }
     }
 
+
+    eraseSuccess(res) {
+        return () => {
+            res.status(200); // Created/Updated/Deleted
+            res.json({});
+        }
+    }
+
+    emptyEvents(res) {
+        return () => {
+            res.status(200); // Created/Updated/Deleted
+            res.json([]);
+        }
+    }
+
     serverError(res) {
         return (error) => {
             res.status(500);
             res.json(error);
+        }
+    }
+
+    updateError(res) {
+        return (error) => {
+            res.status(400);
+            res.json(error);
+        }
+    }
+
+    updateSuccess(res) {
+        return () => {
+            res.status(200); // Created/Updated/Deleted
+            res.json({});
         }
     }
 

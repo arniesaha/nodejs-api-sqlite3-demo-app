@@ -36,7 +36,7 @@ const ControllerCommon = require('./common/controllerCommon');
 
 /* Load event entity */
 const Event = require('../model/event');
-
+const Actor = require('../model/actor');
 /**
  * Event Controller
  */
@@ -67,8 +67,29 @@ class EventController {
     getAllEvents(res) {
         this.eventDao.findAll()
             .then(this.common.findSuccess(res))
+            .catch(this.common.emptyEvents(res));
+    };
+
+     /**
+     * Finds all entities by actorId.
+     * @return all entities
+     */
+    getByActor(req, res) {
+    	let id = req.params.actorId;
+    	
+        this.eventDao.findByActorId(id)
+            .then(this.common.findSuccess(res))
             .catch(this.common.findError(res));
     };
+
+    /**
+    **/
+    deleteEvents(res){
+    	return this.eventDao.deleteEvents()
+                .then(this.common.eraseSuccess(res))
+                .catch(this.common.serverError(res));
+    }
+
 
     /**
      * Counts all the records present in the database
@@ -103,18 +124,31 @@ class EventController {
      */
     addEvent(req, res) {
         let event = new Event();
+        let actor = new Actor();
+
         if (req.body.id) {
             event.id = req.body.id;
         }
         event.type = req.body.type;
 
+        var actorBody = req.body.actor;
+        // console.log("actor id"+ actor.id);
+        event.actorId = actorBody.id;
+
+        actor.id = actorBody.id;
+        actor.login = actor.login;
+        actor.avatar_url = actor.avatar_url;
+
+        event.created_at = req.body.created_at;
+
+
         if (req.body.id) {
-            return this.eventDao.createWithId(event)
+            return this.eventDao.createWithId(event, actor)
                 .then(this.common.editSuccess(res))
-                .catch(this.common.existsError(res));
+                .catch(this.common.serverError(res));
         }
         else {
-            return this.eventDao.create(event)
+            return this.eventDao.create(event, actor)
                 .then(this.common.editSuccess(res))
                 .catch(this.common.serverError(res));
         }

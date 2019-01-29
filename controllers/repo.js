@@ -1,40 +1,19 @@
-
-// var getAllActors = () => {
-	
-// };
-
-// var updateActor = () => {
-
-// };
-
-// var getStreak = () => {
-
-// };
-
-
-// module.exports = {
-// 	updateActor: updateActor,
-// 	getAllActors: getAllActors,
-// 	getStreak: getStreak
-// };
-
-/* Load Actor Data Access Object */
-
-const ActorDao = require('../dao/ActorDao');
+/* Load Event Data Access Object */
+const RepoDao = require('../dao/repoDao');
 
 /* Load Controller Common function */
 const ControllerCommon = require('./common/controllerCommon');
 
-/* Load actor entity */
-const Actor = require('../model/actor');
+/* Load event entity */
+const Repo = require('../model/repo');
 
 /**
- * Actor Controller
+ * Repo Controller
  */
-class ActorController {
+class RepoController {
 
     constructor() {
-        this.actorDao = new ActorDao();
+        this.repoDao = new RepoDao();
         this.common = new ControllerCommon();
     }
 
@@ -46,7 +25,7 @@ class ActorController {
     findById(req, res) {
         let id = req.params.id;
 
-        this.actorDao.findById(id)
+        this.repoDao.findById(id)
             .then(this.common.findSuccess(res))
             .catch(this.common.findError(res));
     };
@@ -56,10 +35,11 @@ class ActorController {
      * @return all entities
      */
     findAll(res) {
-        this.actorDao.findAll()
+        this.repoDao.findAll()
             .then(this.common.findSuccess(res))
             .catch(this.common.findError(res));
     };
+
 
     /**
      * Counts all the records present in the database
@@ -67,7 +47,7 @@ class ActorController {
      */
     countAll(res) {
 
-        this.actorDao.countAll()
+        this.repoDao.countAll()
             .then(this.common.findSuccess(res))
             .catch(this.common.serverError(res));
     };
@@ -77,67 +57,44 @@ class ActorController {
      * @params req, res
      * @return true if the entity has been updated, false if not found and not updated
      */
-    updateActor(req, res) {
-        let actor = new Actor();
-        actor.id = req.body.id;
-        actor.login = req.body.login;
-        actor.avatar_url = req.body.avatar_url;
+    update(req, res) {
+        let repo = new Repo();
+        repo.id = req.body.repo.id;
+        repo.name = repo.body.repo.name;
+        repo.url = repo.body.repo.url;
+        repo.actorId = repo.body.repo.created_at;
 
-        return this.actorDao.update(actor)
+        return this.repoDao.update(repo)
             .then(this.common.editSuccess(res))
             .catch(this.common.serverError(res));
     };
-
-    updateAvatarURL(req, res){
-    	let actor = new Actor();
-        actor.id = req.body.id;
-        actor.login = req.body.login;
-        actor.avatar_url = req.body.avatar_url;
-
-        return this.actorDao.updateAvatarURL(actor)
-            .then(this.common.updateSuccess(res))
-            .catch(this.common.updateError(res));
-    }
-
-    getAllActors(res){
-    	return this.actorDao.getAllActors()
-    		.then(this.common.findSuccess(res))
-    		.catch(this.common.serverError(res))
-    }
-
-    getStreak(res){
-    	return this.actorDao.getStreak()
-    		.then(this.common.findSuccess(res))
-    		.catch(this.common.serverError(res))
-    }
 
     /**
      * Creates the given entity in the database
      * @params req, res
      * returns database insertion status
      */
-    addActor(req, res) {
-        let actor = new Actor();
-        // let actor = new Actor();
+    addRepo(req, res) {
+        let repo = new Repo();
         
-        if (req.id) {
-            actor.id = req.id;
+        if (req.body.repo.id) {
+            repo.id = req.body.repo.id;
         }
+        repo.name = req.body.repo.name;
+        repo.url = req.body.repo.url;
 
-        // console.log('actorid: '+req.id);
-        
-        actor.login = req.login;
+        var actorBody = req.body.actor;
+        repo.actorId = actorBody.id;
 
-        actor.avatar_url = req.avatar_url;
+        console.log("add repo actor", actorBody);
 
-
-        if (req.id) {
-            return this.actorDao.createWithId(actor)
+        if (req.body.repo.id) {
+            return this.repoDao.createWithId(repo)
                 .then(this.common.editSuccess(res))
-                .catch(this.common.serverError(res));
+                .catch(this.common.existsError(res));
         }
         else {
-            return this.actorDao.create(actor)
+            return this.repoDao.create(repo)
                 .then(this.common.editSuccess(res))
                 .catch(this.common.serverError(res));
         }
@@ -152,7 +109,7 @@ class ActorController {
     deleteById(req, res) {
         let id = req.params.id;
 
-        this.actorDao.deleteById(id)
+        this.repoDao.deleteById(id)
             .then(this.common.editSuccess(res))
             .catch(this.common.serverError(res));
     };
@@ -165,14 +122,13 @@ class ActorController {
     exists(req, res) {
         let id = req.params.id;
 
-        this.actorDao.exists(id)
+        this.repoDao.exists(id)
             .then(this.common.existsSuccess(res))
             .catch(this.common.findError(res));
     };
 }
 
-module.exports = ActorController;
-
+module.exports = RepoController;
 
 
 

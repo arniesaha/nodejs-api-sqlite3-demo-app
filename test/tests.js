@@ -101,6 +101,7 @@ describe('git_test ', function() {
 					done();
 				}).catch((err) => {
 					console.log(err);
+					console.log("Event: ", event);
 					done(err);
 				});
 			});
