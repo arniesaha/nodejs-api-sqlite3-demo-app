@@ -1,26 +1,6 @@
-
-// var getAllActors = () => {
-	
-// };
-
-// var updateActor = () => {
-
-// };
-
-// var getStreak = () => {
-
-// };
-
-
-// module.exports = {
-// 	updateActor: updateActor,
-// 	getAllActors: getAllActors,
-// 	getStreak: getStreak
-// };
-
 /* Load Actor Data Access Object */
 
-const ActorDao = require('../dao/ActorDao');
+const ActorDao = require('../dao/actorDao');
 
 /* Load Controller Common function */
 const ControllerCommon = require('./common/controllerCommon');
